@@ -4,75 +4,118 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sentimental Calendar</title>
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet"/>
+  <link
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css"
+    rel="stylesheet"
+  />
   <style>
-    body { font-family: sans-serif; margin:0; padding:1rem; background: #f5f5f5; }
-    #calendar { max-width:900px; margin:1rem auto; background: #fff; padding:1rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    h1 { text-align:center; font-size:2rem; margin:0; }
-    .fc .fc-daygrid-day--today { background: #e6f7ff; }
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f0f2f5;
+    }
+    #calendar-container {
+      max-width: 960px;
+      margin: 1rem auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin: 0 0 0.5rem;
+    }
+    /* Gold-highlight for Holy Editom */
+    .fc-bg-event {
+      background-color: gold !important;
+      opacity: 0.4 !important;
+    }
+    /* Accent colors */
+    .fc .fc-daygrid-day-frame {
+      border-color: #e0e0e0;
+    }
+    .fc .fc-toolbar-title {
+      font-weight: 600;
+      font-size: 1.4rem;
+    }
   </style>
 </head>
 <body>
   <h1 id="yearTitle">Year 0001</h1>
-  <div id="calendar"></div>
+  <div id="calendar-container">
+    <div id="calendar"></div>
+  </div>
 
-  <!-- UMD builds -->
+  <!-- UMD bundles -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/daygrid.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/rrule.global.min.js"></script>
   <script>
-    // Compute custom year
-    const today = new Date();
-    const epoch = new Date(2024,4,8);
-    let customYear = (today >= new Date(today.getFullYear(),epoch.getMonth(),epoch.getDate()))
-      ? today.getFullYear() - epoch.getFullYear() + 1
-      : today.getFullYear() - epoch.getFullYear();
-    document.getElementById('yearTitle').textContent = 'Year ' + String(customYear).padStart(4,'0');
-
     document.addEventListener('DOMContentLoaded', function(){
+      // Compute custom year from May 8, 2024 epoch
+      const today = new Date();
+      const epoch = new Date(2024, 4, 8);
+      const customYear = (today >= new Date(today.getFullYear(), epoch.getMonth(), epoch.getDate()))
+        ? today.getFullYear() - epoch.getFullYear() + 1
+        : today.getFullYear() - epoch.getFullYear();
+      document.getElementById('yearTitle').textContent = 'Year ' + String(customYear).padStart(4,'0');
+
+      // Initialize FullCalendar
       const calendarEl = document.getElementById('calendar');
       const calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: [ FullCalendar.dayGridPlugin, FullCalendar.rrulePlugin ],
+        plugins: [ FullCalendarDayGrid.default, FullCalendarRRule.default ],
         initialView: 'dayGridMonth',
         initialDate: today,
-        headerToolbar: { left:'prev,next today', center:'title', right:'' },
-        height:'auto',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
+        },
+        height: 'auto',
         events: [
-          { title:'Heroes Day', rrule:{freq:'yearly',bymonth:1,bymonthday:1} },
-          { title:'Dumb Day', rrule:{freq:'yearly',bymonth:1,bymonthday:6} },
-          { title:'Smart Day', rrule:{freq:'yearly',bymonth:1,bymonthday:20} },
-          { title:'Rebirth Day', rrule:{freq:'yearly',bymonth:2,bymonthday:16} },
-          { title:'Basil Day', rrule:{freq:'yearly',bymonth:2,bymonthday:18} },
-          { title:'Ib Day', rrule:{freq:'yearly',bymonth:2,bymonthday:27} },
-          { title:'Mari Day', rrule:{freq:'yearly',bymonth:3,bymonthday:1} },
-          { title:'Skeleton Day', rrule:{freq:'yearly',bymonth:4,bymonthday:1} },
-          { title:'Bread Day', rrule:{freq:'yearly',bymonth:4,bymonthday:9} },
-          { title:'Holy Editom', rrule:{freq:'daily',dtstart:'2024-04-09',until:'2024-06-16'}, display:'background', color:'gold' },
-          { title:'Uwharries Day', rrule:{freq:'yearly',bymonth:4,bymonthday:23} },
-          { title:'Clannad Day', rrule:{freq:'yearly',bymonth:4,bymonthday:28} },
-          { title:'Goobie Day', rrule:{freq:'yearly',bymonth:5,bymonthday:2} },
-          { title:"New Year’s Eve", rrule:{freq:'yearly',bymonth:5,bymonthday:7} },
-          { title:"New Year’s Day", rrule:{freq:'yearly',bymonth:5,bymonthday:8} },
-          { title:'End of the Editomyel Mourning Period', rrule:{freq:'yearly',bymonth:5,bymonthday:15} },
-          { title:'Aubrey Day', rrule:{freq:'yearly',bymonth:5,bymonthday:23} },
-          { title:'Girl Day', rrule:{freq:'yearly',bymonth:6,bymonthday:3} },
-          { title:'Ocean Day', rrule:{freq:'yearly',bymonth:6,bymonthday:11} },
-          { title:'Fallout Day', rrule:{freq:'yearly',bymonth:6,bymonthday:23} },
-          { title:'Shit Day', rrule:{freq:'yearly',bymonth:7,bymonthday:4} },
-          { title:'Sunny Day', rrule:{freq:'yearly',bymonth:7,bymonthday:20} },
-          { title:'Reality Day', rrule:{freq:'yearly',bymonth:8,bymonthday:4} },
-          { title:'Flood Day', rrule:{freq:'yearly',bymonth:8,bymonthday:25} },
-          { title:'Friendship Day', rrule:{freq:'yearly',bymonth:9,bymonthday:1} },
-          { title:'Underground Day', rrule:{freq:'yearly',bymonth:9,bymonthday:15} },
-          { title:'Termina Day', rrule:{freq:'yearly',bymonth:9,bymonthday:24} },
-          { title:'Vision Day', rrule:{freq:'yearly',bymonth:11,bymonthday:8} },
-          { title:'Kel Day', rrule:{freq:'yearly',bymonth:11,bymonthday:11} },
-          { title:'OG Day', rrule:{freq:'yearly',bymonth:11,bymonthday:13} },
-          { title:'Siblings Appreciation Day', rrule:{freq:'yearly',bymonth:12,bymonthday:13} },
-          { title:'Psychosis Day', rrule:{freq:'yearly',bymonth:12,bymonthday:16} },
-          { title:'Omori Day', rrule:{freq:'yearly',bymonth:12,bymonthday:25} },
-          { title:'Boxing Day', rrule:{freq:'yearly',bymonth:12,bymonthday:26} },
-          { title:'Haunted Day', rrule:{freq:'yearly',bymonth:12,bymonthday:27} }
+          { title: 'Heroes Day', rrule: { freq: 'yearly', bymonth: 1, bymonthday: 1 } },
+          { title: 'Dumb Day',   rrule: { freq: 'yearly', bymonth: 1, bymonthday: 6 } },
+          { title: 'Smart Day',  rrule: { freq: 'yearly', bymonth: 1, bymonthday: 20 } },
+          { title: 'Rebirth Day',rrule: { freq: 'yearly', bymonth: 2, bymonthday: 16 } },
+          { title: 'Basil Day',  rrule: { freq: 'yearly', bymonth: 2, bymonthday: 18 } },
+          { title: 'Ib Day',     rrule: { freq: 'yearly', bymonth: 2, bymonthday: 27 } },
+          { title: 'Mari Day',   rrule: { freq: 'yearly', bymonth: 3, bymonthday: 1 } },
+          { title: 'Skeleton Day',rrule:{ freq: 'yearly', bymonth: 4, bymonthday: 1 } },
+          { title: 'Bread Day',  rrule: { freq: 'yearly', bymonth: 4, bymonthday: 9 } },
+          {
+            title: 'Holy Editom',
+            rrule: { freq: 'yearly', dtstart: '2024-04-09' },
+            duration: 'P69D',
+            display: 'background'
+          },
+          { title: 'Uwharries Day', rrule:{ freq:'yearly', bymonth:4, bymonthday:23 } },
+          { title: 'Clannad Day',   rrule:{ freq:'yearly', bymonth:4, bymonthday:28 } },
+          { title: 'Goobie Day',     rrule:{ freq:'yearly', bymonth:5, bymonthday:2 } },
+          { title: "New Year's Eve", rrule:{ freq:'yearly', bymonth:5, bymonthday:7 } },
+          { title: "New Year's Day", rrule:{ freq:'yearly', bymonth:5, bymonthday:8 } },
+          { title: 'End of the Editomyel Mourning Period',rrule:{freq:'yearly',bymonth:5,bymonthday:15} },
+          { title: 'Aubrey Day',     rrule:{ freq:'yearly', bymonth:5, bymonthday:23 } },
+          { title: 'Girl Day',       rrule:{ freq:'yearly', bymonth:6, bymonthday:3 } },
+          { title: 'Ocean Day',      rrule:{ freq:'yearly', bymonth:6, bymonthday:11 } },
+          { title: 'Fallout Day',    rrule:{ freq:'yearly', bymonth:6, bymonthday:23 } },
+          { title: 'Shit Day',       rrule:{ freq:'yearly', bymonth:7, bymonthday:4 } },
+          { title: 'Sunny Day',      rrule:{ freq:'yearly', bymonth:7, bymonthday:20 } },
+          { title: 'Reality Day',    rrule:{ freq:'yearly', bymonth:8, bymonthday:4 } },
+          { title: 'Flood Day',      rrule:{ freq:'yearly', bymonth:8, bymonthday:25 } },
+          { title: 'Friendship Day', rrule:{freq:'yearly',bymonth:9,bymonthday:1} },
+          { title: 'Underground Day',rrule:{freq:'yearly',bymonth:9,bymonthday:15} },
+          { title: 'Termina Day',    rrule:{freq:'yearly',bymonth:9,bymonthday:24} },
+          { title: 'Vision Day',     rrule:{freq:'yearly',bymonth:11,bymonthday:8} },
+          { title: 'Kel Day',        rrule:{freq:'yearly',bymonth:11,bymonthday:11} },
+          { title: 'OG Day',         rrule:{freq:'yearly',bymonth:11,bymonthday:13} },
+          { title: 'Siblings Appreciation Day',rrule:{freq:'yearly',bymonth:12,bymonthday:13} },
+          { title: 'Psychosis Day',  rrule:{freq:'yearly',bymonth:12,bymonthday:16} },
+          { title: 'Omori Day',      rrule:{freq:'yearly',bymonth:12,bymonthday:25} },
+          { title: 'Boxing Day',     rrule:{freq:'yearly',bymonth:12,bymonthday:26} },
+          { title: 'Haunted Day',    rrule:{freq:'yearly',bymonth:12,bymonthday:27} }
         ]
       });
       calendar.render();
